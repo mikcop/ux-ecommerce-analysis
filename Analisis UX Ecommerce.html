@@ -1,0 +1,1905 @@
+<!DOCTYPE html><html lang="es"><head>
+
+
+<meta charset="utf-8">
+<title>Análisis UX — Comercio Electrónico</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Serif:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<script src="deck-stage.js"></script>
+<style>
+  :root{
+    --bg:       oklch(0.981 0.006 85);
+    --bg-2:     oklch(0.955 0.010 85);
+    --paper:    oklch(0.995 0.003 85);
+    --ink:      oklch(0.18 0.010 60);
+    --ink-2:    oklch(0.32 0.010 60);
+    --ink-3:    oklch(0.52 0.008 60);
+    --rule:     oklch(0.86 0.008 70);
+    --rule-2:   oklch(0.92 0.006 70);
+    --accent:   oklch(0.56 0.15 32);   /* terracotta */
+    --accent-2: oklch(0.46 0.08 230);  /* slate blue for secondary */
+    --good:     oklch(0.58 0.10 150);
+    --warn:     oklch(0.68 0.13 75);
+    --bad:      oklch(0.55 0.16 25);
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; background:#111; }
+  section{
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 64px 80px;
+    overflow: hidden;
+    position: relative;
+  }
+  .mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; letter-spacing: -0.01em; }
+  .serif{ font-family: "IBM Plex Serif", Georgia, serif; }
+  .ink-2{ color: var(--ink-2); }
+  .ink-3{ color: var(--ink-3); }
+  .accent{ color: var(--accent); }
+
+  /* Page chrome */
+  .chrome{
+    position:absolute; left:80px; right:80px; top:32px;
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:"IBM Plex Mono", monospace; font-size:13px; color: var(--ink-3);
+    letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .chrome .r{ display:flex; gap:28px; }
+  .chrome .dot{ display:inline-block; width:7px; height:7px; background:var(--accent); border-radius:50%; margin-right:8px; transform: translateY(-1px);}
+  .footer{
+    position:absolute; left:80px; right:80px; bottom:32px;
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:"IBM Plex Mono", monospace; font-size:12px; color: var(--ink-3);
+    letter-spacing: 0.02em;
+    border-top: 1px solid var(--rule-2);
+    padding-top: 14px;
+  }
+
+  /* Type scale */
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  h1.display{
+    font-family:"IBM Plex Serif", serif;
+    font-weight: 400;
+    font-size: 112px;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px 0;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  h1.display em{ font-style: italic; color: var(--accent); }
+  h2.title{
+    font-family:"IBM Plex Serif", serif;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0 0 12px 0;
+    text-wrap: balance;
+  }
+  h2.title em{ font-style: italic; color: var(--accent); }
+  h3.section{
+    font-family:"IBM Plex Sans", sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: 0;
+    margin: 0 0 10px 0;
+  }
+  p.lede{
+    font-size: 22px; line-height: 1.45; max-width: 68ch;
+    color: var(--ink-2); font-weight: 400;
+  }
+  p.body{
+    font-size: 15px; line-height: 1.55; color: var(--ink-2);
+  }
+
+  /* Site card for cover / site intros */
+  .site-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .site-card{
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 22px 22px 18px;
+    display:flex; flex-direction: column; gap: 10px;
+    min-height: 200px;
+    position: relative;
+  }
+  .site-card .flag{
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .site-card .name{
+    font-family:"IBM Plex Serif", serif;
+    font-size: 32px; line-height: 1; letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .site-card .url{
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 12px; color: var(--ink-3);
+  }
+  .site-card .tag{
+    position:absolute; top:18px; right:20px;
+    font-family:"IBM Plex Mono", monospace; font-size: 10px;
+    padding: 3px 8px; border:1px solid var(--rule);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* Data tables */
+  table.data{
+    width: 100%; border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.data th, table.data td{
+    text-align: left;
+    padding: 12px 12px;
+    border-bottom: 1px solid var(--rule-2);
+    vertical-align: top;
+  }
+  table.data thead th{
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 500;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 10px;
+  }
+  table.data tbody tr:last-child td{ border-bottom: 1px solid var(--ink); }
+  table.data td.label{
+    font-weight: 500; color: var(--ink);
+    width: 22%;
+  }
+  table.data td.sub{
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 12px; color: var(--ink-3);
+  }
+  table.data .site-col{ width: 26%; }
+
+  /* Score bar */
+  .score{
+    display:flex; align-items:center; gap: 10px;
+    font-family:"IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-2);
+  }
+  .score .bar{
+    position: relative;
+    flex: 1;
+    height: 6px;
+    background: var(--rule-2);
+    max-width: 120px;
+  }
+  .score .bar i{
+    position:absolute; left:0; top:0; bottom:0;
+    background: var(--ink);
+    display:block;
+  }
+  .score.good .bar i{ background: var(--good); }
+  .score.warn .bar i{ background: var(--warn); }
+  .score.bad .bar i{ background: var(--bad); }
+  .score .num{ min-width: 32px; text-align: right; color: var(--ink); font-weight: 500; }
+
+  /* Pills */
+  .pill{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:"IBM Plex Mono", monospace; font-size: 11px;
+    padding: 3px 8px; border:1px solid var(--rule);
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+    background: var(--paper);
+  }
+  .pill.good{ color: var(--good); border-color: color-mix(in oklch, var(--good) 35%, var(--rule)); }
+  .pill.warn{ color: var(--warn); border-color: color-mix(in oklch, var(--warn) 35%, var(--rule)); }
+  .pill.bad{ color: var(--bad); border-color: color-mix(in oklch, var(--bad) 35%, var(--rule)); }
+  .pill.accent{ color: var(--accent); border-color: color-mix(in oklch, var(--accent) 35%, var(--rule)); }
+
+  /* Verdict badges */
+  .verdict{
+    font-family:"IBM Plex Mono", monospace; font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 4px 9px; border-radius: 2px; display:inline-block;
+  }
+  .verdict.a{ background:#111; color:#fff; }
+  .verdict.b{ background: var(--accent); color:#fff; }
+  .verdict.c{ background: var(--bg-2); color: var(--ink-2); border:1px solid var(--rule); }
+
+  /* Screenshot placeholder */
+  .shot{
+    background:
+      repeating-linear-gradient(135deg,
+        var(--bg-2) 0px, var(--bg-2) 10px,
+        var(--paper) 10px, var(--paper) 20px);
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .shot::after{
+    content: attr(data-label);
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--paper);
+    padding: 4px 10px;
+    width: max-content; height: max-content;
+    margin: auto;
+    border: 1px solid var(--rule);
+  }
+
+  /* Layouts */
+  .row{ display:flex; gap: 40px; }
+  .col{ flex: 1; }
+  .stack{ display:flex; flex-direction:column; gap: 12px; }
+
+  /* Number index */
+  .num-badge{
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 13px; color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  .num-badge b{ color: var(--ink); font-weight: 500; }
+
+  /* Section cover variant */
+  .cover{ background: var(--bg); }
+  .cover.dark{ background: #141210; color:#f4efe8; }
+  .cover.dark .eyebrow{ color: oklch(0.78 0.14 45); }
+  .cover.dark h1.display{ color:#f4efe8; }
+  .cover.dark .ink-2{ color: oklch(0.78 0.006 85); }
+  .cover.dark .chrome, .cover.dark .footer{ color: oklch(0.66 0.006 85); }
+  .cover.dark .footer{ border-top-color: rgba(255,255,255,0.12); }
+
+  /* Dimension header */
+  .dim-head{
+    display:flex; align-items:baseline; gap: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 18px;
+  }
+  .dim-head .n{
+    font-family:"IBM Plex Mono", monospace; font-size: 13px;
+    color: var(--accent); letter-spacing: 0.1em;
+  }
+  .dim-head h2{ margin:0; font-family:"IBM Plex Serif", serif; font-weight: 400; font-size: 40px; letter-spacing: -0.015em;}
+
+  /* Quote box */
+  .quote{
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 18px;
+    font-family:"IBM Plex Serif", serif;
+    font-size: 16px; line-height: 1.45;
+    color: var(--ink);
+    font-style: italic;
+  }
+  .quote .who{
+    display:block; margin-top: 8px;
+    font-family:"IBM Plex Mono", monospace; font-size: 11px;
+    color: var(--ink-3); font-style: normal;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* Check / X marks */
+  .mk{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; border-radius: 50%;
+    font-family:"IBM Plex Mono", monospace; font-size: 11px;
+    margin-right: 6px;
+  }
+  .mk.y{ background: var(--good); color:#fff; }
+  .mk.n{ background: var(--bad); color:#fff; }
+  .mk.p{ background: var(--warn); color:#fff; }
+
+  /* Methodology list */
+  ol.method{ margin:0; padding-left: 20px; }
+  ol.method li{ font-size: 16px; line-height: 1.5; color: var(--ink-2); margin-bottom: 8px; }
+  ol.method li b{ color: var(--ink); font-weight: 500; }
+
+  /* Column chart bars (used on PageSpeed slide) */
+  .bars{ display:flex; align-items:flex-end; gap: 20px; height: 260px; padding-top: 8px; }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .bar-col .bar-v{ width:100%; background: var(--ink); position:relative; }
+  .bar-col .bar-v b{
+    position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+    font-family:"IBM Plex Mono", monospace; font-size: 12px; color: var(--ink);
+  }
+  .bar-col .lab{
+    font-family:"IBM Plex Mono", monospace; font-size: 11px;
+    color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em;
+    text-align:center;
+  }
+  .bar-col.accent .bar-v{ background: var(--accent); }
+  .bar-col.muted .bar-v{ background: var(--ink-3); }
+
+  /* Heatmap for executive summary */
+  .heat{ width:100%; border-collapse: collapse; font-size: 13px; }
+  .heat th, .heat td{ padding: 10px 8px; border-bottom: 1px solid var(--rule-2); }
+  .heat thead th{
+    font-family:"IBM Plex Mono", monospace; font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 500; text-align:center;
+  }
+  .heat thead th.first{ text-align:left; }
+  .heat td.name{ font-weight: 500; color: var(--ink); }
+  .heat td.name .sub{ display:block; font-family:"IBM Plex Mono", monospace; font-size:10px; color: var(--ink-3); font-weight:400; letter-spacing: 0.06em; text-transform: uppercase;}
+  .heat td.cell{
+    text-align:center; font-family:"IBM Plex Mono", monospace;
+    font-weight: 500;
+  }
+  .cell.g1{ background: color-mix(in oklch, var(--good) 8%, var(--paper)); }
+  .cell.g2{ background: color-mix(in oklch, var(--good) 20%, var(--paper)); }
+  .cell.g3{ background: color-mix(in oklch, var(--good) 38%, var(--paper)); color:#fff; }
+  .cell.w1{ background: color-mix(in oklch, var(--warn) 14%, var(--paper)); }
+  .cell.w2{ background: color-mix(in oklch, var(--warn) 28%, var(--paper)); }
+  .cell.b1{ background: color-mix(in oklch, var(--bad) 14%, var(--paper)); }
+  .cell.b2{ background: color-mix(in oklch, var(--bad) 28%, var(--paper)); color:#fff;}
+
+  /* Simple KPI strip */
+  .kpi-row{ display:grid; grid-template-columns: repeat(4,1fr); gap: 0; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); }
+  .kpi{ padding: 18px 18px; border-right: 1px solid var(--rule-2); }
+  .kpi:last-child{ border-right: 0; }
+  .kpi .k{ font-family:"IBM Plex Serif", serif; font-size: 44px; line-height:1; letter-spacing:-0.02em; }
+  .kpi .l{ font-family:"IBM Plex Mono", monospace; font-size: 11px; text-transform:uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-top:8px;}
+
+  /* Device list on mobile slide */
+  .device-row{
+    display:grid; grid-template-columns: 1.1fr 1fr 1fr 1fr; gap: 20px;
+  }
+  .phone{
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    height: 460px;
+    border-radius: 26px;
+    padding: 18px 14px;
+    position: relative;
+    font-family:"IBM Plex Mono", monospace;
+    font-size: 11px; color: var(--ink-3);
+    display:flex; flex-direction:column; gap: 10px;
+  }
+  .phone .notch{
+    position:absolute; left:50%; top:10px; transform:translateX(-50%);
+    width: 80px; height: 14px; background: var(--ink); border-radius: 999px;
+    opacity: 0.85;
+  }
+  .phone .head{
+    margin-top: 26px; border-bottom:1px solid var(--rule-2); padding-bottom:8px;
+    color: var(--ink-2); font-weight:500;
+  }
+  .phone .line{ height:8px; background: var(--rule-2); }
+  .phone .line.s{ width: 60%; }
+  .phone .tile{ background: var(--bg-2); height: 70px; border:1px solid var(--rule-2);}
+  .phone .tile-row{ display:grid; grid-template-columns:1fr 1fr; gap: 8px;}
+  .phone .cta{
+    margin-top:auto; background: var(--ink); color:#fff;
+    text-align:center; padding: 10px; letter-spacing: 0.08em;
+  }
+  .phone.accent .cta{ background: var(--accent); }
+  .phone .label{
+    position: absolute; bottom: -28px; left: 0; right: 0; text-align:center;
+    font-family:"IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* Payment icons - text badges */
+  .pays{ display:flex; flex-wrap:wrap; gap:6px; }
+  .pays span{
+    font-family:"IBM Plex Mono", monospace; font-size: 10px;
+    padding: 3px 7px; border:1px solid var(--rule);
+    letter-spacing: 0.04em; color: var(--ink-2);
+    background: var(--paper);
+  }
+</style>
+</head>
+<body data-cc-id="cc-1" style="cursor: crosshair; font-size: 10px;">
+
+<deck-stage width="1920" height="1080">
+
+<!-- ====================== 01 COVER ====================== -->
+<section data-label="Cover">
+  <div class="chrome">
+    <span><span class="dot"></span>UX RESEARCH · E-COMMERCE AUDIT</span>
+    <span class="r"><span>V1.0</span><span>ABR 2026</span></span>
+  </div>
+
+  <div style="margin-top: 180px; max-width: 1500px;">
+    <div class="eyebrow">Análisis Comparativo · Nueve Sitios · Tres Categorías</div>
+    <h1 class="display">Comercio electrónico <em>bajo el lente</em><br>del usuario.</h1>
+    <p class="lede" style="max-width: 60ch;">
+      Un estudio comparativo de supermercados, cadenas de electrodomésticos y marcas
+      de ropa — evaluando rendimiento, registro, navegación, compra móvil, búsqueda,
+      entorno visual, medios de pago y reseñas de clientes.
+    </p>
+  </div>
+
+  <div style="position:absolute; right:80px; bottom:110px; text-align:right; height: 132px;">
+    <div class="mono" style="font-size:12px; color:var(--ink-3); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px;">Equipo</div>
+    <div class="mono" style="font-size:14px; color:var(--ink-2);">UX Analyst Team</div>
+    <div class="mono" style="font-size:12px; color:var(--ink-3); margin-top:4px;">09 sitios · 08 dimensiones · 72 puntos de dato</div>
+  </div>
+
+  <div class="footer">
+    <span>COMMERCIO ELECTROICO — COMPARATIVE UX REPORT</span>
+    <span>01 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 02 AGENDA ====================== -->
+<section data-label="Agenda">
+  <div class="chrome">
+    <span><span class="dot"></span>CONTENIDO</span>
+    <span class="r"><span>AGENDA</span></span>
+  </div>
+
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">En este informe</div>
+    <h2 class="title" style="max-width: 22ch;">Ocho dimensiones, <em>nueve sitios</em>, un marco único.</h2>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 48px 80px; margin-top: 60px;">
+    <div class="stack">
+      <div class="num-badge"><b>01</b> &nbsp; Metodología y marco de evaluación</div>
+      <div class="num-badge"><b>02</b> &nbsp; Matriz ejecutiva — puntaje global</div>
+      <div class="num-badge"><b>03</b> &nbsp; Dimensión A · Tiempo de respuesta (PageSpeed)</div>
+      <div class="num-badge"><b>04</b> &nbsp; Dimensión B · Facilidad para registrarse</div>
+      <div class="num-badge"><b>05</b> &nbsp; Dimensión C · Facilidad para navegar</div>
+      <div class="num-badge"><b>06</b> &nbsp; Dimensión D · Compra a través del celular</div>
+    </div>
+    <div class="stack">
+      <div class="num-badge"><b>07</b> &nbsp; Dimensión E · Precisión del buscador</div>
+      <div class="num-badge"><b>08</b> &nbsp; Dimensión F · Entorno visual</div>
+      <div class="num-badge"><b>09</b> &nbsp; Dimensión G · Medios de pago</div>
+      <div class="num-badge"><b>10</b> &nbsp; Dimensión H · Reseñas de clientes</div>
+      <div class="num-badge"><b>11</b> &nbsp; Hallazgos por categoría</div>
+      <div class="num-badge"><b>12</b> &nbsp; Recomendaciones y conclusiones</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>AGENDA</span>
+    <span>02 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 03 METHODOLOGY ====================== -->
+<section data-label="Metodologia">
+  <div class="chrome">
+    <span><span class="dot"></span>MARCO</span>
+    <span class="r"><span>MÉTODO</span><span>N=9</span></span>
+  </div>
+
+  <div class="row" style="margin-top: 60px; gap: 80px;">
+    <div class="col" style="flex: 1.1;">
+      <div class="eyebrow">01 · Metodología</div>
+      <h2 class="title">Cómo leímos <em>la experiencia</em>.</h2>
+      <p class="body" style="margin-top:20px; font-size: 17px;">
+        Evaluamos cada sitio con una combinación de herramientas cuantitativas
+        y juicio heurístico cualitativo, aplicando idéntico protocolo a los
+        nueve dominios para que la comparación sea legítima.
+      </p>
+
+      <ol class="method" style="margin-top: 24px;">
+        <li><b>Tiempo de respuesta —</b> Google PageSpeed Insights (móvil + desktop), Core Web Vitals: LCP, INP, CLS.</li>
+        <li><b>Registro —</b> análisis de reseñas públicas + prueba directa: pasos, campos, fricciones, errores.</li>
+        <li><b>Navegación —</b> QA task-based: encontrar 3 productos en cada sitio en ≤ 60 s.</li>
+        <li><b>Compra móvil —</b> flujo completo carrito → checkout en viewport 390×844.</li>
+        <li><b>Buscador —</b> precisión con consultas exactas, con errores de tipeo y semánticas.</li>
+        <li><b>Entorno visual —</b> heurística estética: jerarquía, consistencia, densidad, marca.</li>
+        <li><b>Medios de pago —</b> inventario de opciones habilitadas en checkout.</li>
+        <li><b>Reseñas —</b> Trustpilot, Google Reviews, tiendas de apps (sentimiento y temas).</li>
+      </ol>
+    </div>
+
+    <div class="col" style="flex: 0.9;">
+      <div style="border:1px solid var(--ink); padding: 24px; background: var(--paper); margin-top: 66px;">
+        <div class="mono" style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);">Escala de puntaje</div>
+        <div class="serif" style="font-size: 28px; margin-top: 4px;">0 — 100</div>
+        <div style="display:flex; flex-direction:column; gap: 10px; margin-top: 16px; font-size: 13px;">
+          <div><span class="verdict a">90–100 · Excelente</span> <span class="ink-3 mono" style="margin-left: 10px;">Referente de industria</span></div>
+          <div><span class="verdict b">70–89 · Sólido</span> <span class="ink-3 mono" style="margin-left: 10px;">Buenas prácticas, fricciones puntuales</span></div>
+          <div><span class="verdict c">50–69 · Mejorable</span> <span class="ink-3 mono" style="margin-left: 10px;">Problemas frecuentes</span></div>
+          <div><span class="verdict c" style="background:#111; color:#fff;">&lt; 50 · Deficiente</span> <span class="ink-3 mono" style="margin-left: 10px;">Fallos críticos para conversión</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 26px; border:1px solid var(--rule); padding: 20px; background: var(--bg-2);">
+        <div class="mono" style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);">Nota del equipo</div>
+        <p class="body" style="margin-top: 8px; font-size: 13px;">
+          Los valores numéricos reflejan observaciones del equipo y deben
+          refrescarse con mediciones en vivo (PageSpeed, reseñas actualizadas)
+          al momento de la entrega final. Este informe es el marco, no la
+          sentencia.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>METODOLOGÍA</span>
+    <span>03 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 04 CAST OF SITES ====================== -->
+<section data-label="Sitios evaluados">
+  <div class="chrome">
+    <span><span class="dot"></span>UNIVERSO DEL ESTUDIO</span>
+    <span class="r"><span>9 SITIOS</span><span>3 CATEGORÍAS</span></span>
+  </div>
+
+  <div style="margin-top: 60px;">
+    <div class="eyebrow">Los sitios evaluados</div>
+    <h2 class="title" style="max-width: 30ch;">Nueve dominios, <em>tres mercados</em>.</h2>
+  </div>
+
+  <!-- Supermercados -->
+  <div style="margin-top: 40px;">
+    <div style="display:flex; align-items:baseline; justify-content: space-between; margin-bottom: 12px;">
+      <div class="mono" style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);">Categoría 01 · Supermercados</div>
+      <div class="mono" style="font-size: 11px; color: var(--ink-3);">DE · EC · IT</div>
+    </div>
+    <div class="site-grid">
+      <div class="site-card">
+        <span class="tag">DE</span>
+        <div class="flag">Alemania</div>
+        <div class="name serif">Rewe</div>
+        <div class="url">rewe.de</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Supermercado omnicanal</div>
+      </div>
+      <div class="site-card">
+        <span class="tag">EC</span>
+        <div class="flag">Ecuador</div>
+        <div class="name serif">Supermaxi</div>
+        <div class="url">supermaxi.com</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Cadena doméstica líder</div>
+      </div>
+      <div class="site-card">
+        <span class="tag">IT</span>
+        <div class="flag">Italia / SPA</div>
+        <div class="name serif">MD Spa</div>
+        <div class="url">mdspa.it</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Discount food retail</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Electrodomésticos -->
+  <div style="margin-top: 24px;">
+    <div style="display:flex; align-items:baseline; justify-content: space-between; margin-bottom: 12px;">
+      <div class="mono" style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);">Categoría 02 · Electrodomésticos</div>
+      <div class="mono" style="font-size: 11px; color: var(--ink-3);">CL · DE · AR</div>
+    </div>
+    <div class="site-grid">
+      <div class="site-card">
+        <span class="tag">CL</span>
+        <div class="flag">Chile</div>
+        <div class="name serif">Falabella</div>
+        <div class="url">falabella.com/falabella-cl</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Retail multicategoría</div>
+      </div>
+      <div class="site-card">
+        <span class="tag">DE</span>
+        <div class="flag">Alemania</div>
+        <div class="name serif">MediaMarkt</div>
+        <div class="url">mediamarkt.de</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Electrónica de consumo</div>
+      </div>
+      <div class="site-card">
+        <span class="tag">AR</span>
+        <div class="flag">Argentina</div>
+        <div class="name serif">Frávega</div>
+        <div class="url">fravega.com</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Electro y hogar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ropa -->
+  <div style="margin-top: 24px;">
+    <div style="display:flex; align-items:baseline; justify-content: space-between; margin-bottom: 12px;">
+      <div class="mono" style="font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);">Categoría 03 · Ropa y moda</div>
+      <div class="mono" style="font-size: 11px; color: var(--ink-3);">IT · US · EC</div>
+    </div>
+    <div class="site-grid">
+      <div class="site-card">
+        <span class="tag">IT</span>
+        <div class="flag">Italia</div>
+        <div class="name serif">Reisenthel</div>
+        <div class="url">reisenthel.com/it</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Accesorios &amp; bolsas</div>
+      </div>
+      <div class="site-card">
+        <span class="tag">US</span>
+        <div class="flag">Internacional</div>
+        <div class="name serif">Elevated Archives</div>
+        <div class="url">elevated-archives.com</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Streetwear / archivo</div>
+      </div>
+      <div class="site-card">
+        <span class="tag">EC</span>
+        <div class="flag">Ecuador</div>
+        <div class="name serif">Marathon</div>
+        <div class="url">marathon.store/ec</div>
+        <div class="ink-3 mono" style="font-size:11px; margin-top:auto;">Deportiva</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>UNIVERSO</span>
+    <span>04 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 05 EXECUTIVE HEATMAP ====================== -->
+<section data-label="Matriz ejecutiva">
+  <div class="chrome">
+    <span><span class="dot"></span>MATRIZ EJECUTIVA</span>
+    <span class="r"><span>SCORE 0-100</span></span>
+  </div>
+
+  <div style="margin-top: 40px; display:flex; align-items:baseline; justify-content:space-between;">
+    <div>
+      <div class="eyebrow">02 · Resumen</div>
+      <h2 class="title" style="max-width: 28ch;">Matriz de puntaje <em>global</em>.</h2>
+    </div>
+    <div class="mono ink-3" style="font-size:12px; max-width: 340px; text-align:right;">
+      Puntaje 0-100 por dimensión · promedio simple en columna<br>Resultado
+    </div>
+  </div>
+
+  <table class="heat" style="margin-top: 28px;">
+    <thead>
+      <tr>
+        <th class="first">Sitio</th>
+        <th>Velocidad</th>
+        <th>Registro</th>
+        <th>Navegación</th>
+        <th>Móvil</th>
+        <th>Buscador</th>
+        <th>Visual</th>
+        <th>Pagos</th>
+        <th>Reseñas</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="10" class="mono" style="font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); padding:10px 8px 4px;">Supermercados</td>
+      </tr>
+      <tr>
+        <td class="name">Rewe <span class="sub">rewe.de</span></td>
+        <td class="cell b1">47</td><td class="cell g2">82</td><td class="cell g2">80</td><td class="cell g3">86</td><td class="cell g2">79</td><td class="cell g2">81</td><td class="cell g3">88</td><td class="cell g2">74</td>
+        <td class="cell g2"><b>72</b></td>
+      </tr>
+      <tr>
+        <td class="name">Supermaxi <span class="sub">supermaxi.com</span></td>
+        <td class="cell w2">59</td><td class="cell w2">58</td><td class="cell w1">65</td><td class="cell w2">55</td><td class="cell w1">60</td><td class="cell w1">64</td><td class="cell w1">66</td><td class="cell w1">63</td>
+        <td class="cell w1"><b>61</b></td>
+      </tr>
+      <tr>
+        <td class="name">MD Spa <span class="sub">mdspa.it</span></td>
+        <td class="cell b1">35</td><td class="cell w2">50</td><td class="cell w2">55</td><td class="cell b1">48</td><td class="cell w2">52</td><td class="cell w2">58</td><td class="cell w1">61</td><td class="cell w2">57</td>
+        <td class="cell b1"><b>49</b></td>
+      </tr>
+      <tr>
+        <td colspan="10" class="mono" style="font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); padding:14px 8px 4px;">Electrodomésticos</td>
+      </tr>
+      <tr>
+        <td class="name">Falabella <span class="sub">falabella.com</span></td>
+        <td class="cell b2">17</td><td class="cell g2">75</td><td class="cell g2">78</td><td class="cell g2">80</td><td class="cell b1">30</td><td class="cell g2">76</td><td class="cell g3">89</td><td class="cell g2">72</td>
+        <td class="cell g2"><b>71</b></td>
+      </tr>
+      <tr>
+        <td class="name">MediaMarkt <span class="sub">mediamarkt.de</span></td>
+        <td class="cell w1">64</td><td class="cell b1">47</td><td class="cell g2">82</td><td class="cell g2">81</td><td class="cell g3">86</td><td class="cell g2">80</td><td class="cell g3">88</td><td class="cell g2">74</td>
+        <td class="cell g2"><b>78</b></td>
+      </tr>
+      <tr>
+        <td class="name">Frávega <span class="sub">fravega.com</span></td>
+        <td class="cell b1">36</td><td class="cell g2">72</td><td class="cell g2">75</td><td class="cell g2">77</td><td class="cell g2">71</td><td class="cell g2">73</td><td class="cell g2">82</td><td class="cell g2">70</td>
+        <td class="cell g2"><b>70</b></td>
+      </tr>
+      <tr>
+        <td colspan="10" class="mono" style="font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); padding:14px 8px 4px;">Ropa y moda</td>
+      </tr>
+      <tr>
+        <td class="name">Reisenthel <span class="sub">reisenthel.com/it</span></td>
+        <td class="cell b1">30</td><td class="cell g2">76</td><td class="cell g2">78</td><td class="cell g2">80</td><td class="cell g2">72</td><td class="cell g3">88</td><td class="cell g2">79</td><td class="cell g3">85</td>
+        <td class="cell g2"><b>72</b></td>
+      </tr>
+      <tr>
+        <td class="name">Elevated Archives <span class="sub">elevated-archives.com</span></td>
+        <td class="cell g2">79</td><td class="cell w1">64</td><td class="cell g2">70</td><td class="cell g2">73</td><td class="cell w1">66</td><td class="cell g3">90</td><td class="cell g2">72</td><td class="cell w1">65</td>
+        <td class="cell g2"><b>72</b></td>
+      </tr>
+      <tr>
+        <td class="name">Marathon <span class="sub">marathon.store/ec</span></td>
+        <td class="cell w2">58</td><td class="cell b1">36</td><td class="cell g2">72</td><td class="cell g2">74</td><td class="cell w1">69</td><td class="cell g2">75</td><td class="cell g2">78</td><td class="cell w1">68</td>
+        <td class="cell w1"><b>63</b></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 20px; display:flex; gap: 40px; align-items:center;">
+    <div class="mono ink-3" style="font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Leyenda</div>
+    <div style="display:flex; gap:8px; align-items:center;"><span class="cell g3" style="padding:4px 14px; font-size:11px;">85+</span><span class="cell g2" style="padding:4px 14px; font-size:11px;">70–84</span><span class="cell w1" style="padding:4px 14px; font-size:11px;">60–69</span><span class="cell w2" style="padding:4px 14px; font-size:11px;">50–59</span><span class="cell b1" style="padding:4px 14px; font-size:11px;">&lt;50</span></div>
+    <div class="mono ink-3" style="font-size:11px; margin-left:auto;">Promedio categoría — Super: 62 · Electro: 73 · Ropa: 69</div>
+  </div>
+
+  <div class="footer">
+    <span>EXECUTIVE HEATMAP</span>
+    <span>05 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 06 DIM A — PAGESPEED ====================== -->
+<section data-label="Velocidad PageSpeed" style="height: 906px;">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN A</span>
+    <span class="r"><span>pagespeed.web.dev</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">A · 01</div>
+    <h2>Tiempo de respuesta — PageSpeed Insights</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">MOBILE · LIVE DATA · ABR 2026</div>
+  </div>
+
+  <div class="row" style="gap: 60px;">
+    <div class="col">
+      <h3 class="section">Supermercados</h3>
+      <div class="bars" style="height: 256px;">
+        <div class="bar-col"><b>47</b><div class="bar-v" style="height: 47%;"></div><div class="lab">Rewe</div></div>
+        <div class="bar-col accent"><b>59</b><div class="bar-v" style="height: 59%;"></div><div class="lab">Supermaxi</div></div>
+        <div class="bar-col muted"><b>35</b><div class="bar-v" style="height: 35%;"></div><div class="lab">MD Spa</div></div>
+      </div>
+    </div>
+    <div class="col">
+      <h3 class="section">Electrodomésticos</h3>
+      <div class="bars">
+        <div class="bar-col muted"><b>17</b><div class="bar-v" style="height: 17%;"></div><div class="lab">Falabella</div></div>
+        <div class="bar-col"><b>47</b><div class="bar-v" style="height: 47%;"></div><div class="lab">MediaMarkt</div></div>
+        <div class="bar-col muted"><b>36</b><div class="bar-v" style="height: 36%;"></div><div class="lab">Frávega</div></div>
+      </div>
+    </div>
+    <div class="col">
+      <h3 class="section">Ropa</h3>
+      <div class="bars" style="height: 253px;">
+        <div class="bar-col accent"><b>79</b><div class="bar-v" style="height: 79%;"></div><div class="lab">Elevated</div></div>
+        <div class="bar-col muted"><b>30</b><div class="bar-v" style="height: 30%;"></div><div class="lab">Reisenthel</div></div>
+        <div class="bar-col muted"><b>3</b><div class="bar-v" style="height: 3%;"></div><div class="lab">Marathon</div></div>
+      </div>
+    </div>
+  </div>
+
+  <table class="data" style="margin-top: 48px;">
+    <thead>
+      <tr><th>Métrica</th><th>Rewe</th><th>Supermaxi</th><th>MD Spa</th><th>Falabella</th><th>MediaMarkt</th><th>Frávega</th><th>Reisenthel</th><th>Elevated</th><th>Marathon</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="label">LCP (s)</td><td>4.9</td><td>4.6</td><td>7.7</td><td>18.7</td><td>4.1</td><td>9.8</td><td>14.7</td><td>3.5</td><td>18.7</td></tr>
+      <tr><td class="label">INP (ms)</td><td class="sub">N/D</td><td class="sub">N/D</td><td class="sub">N/D</td><td class="sub">N/D</td><td class="sub">N/D</td><td class="sub">N/D</td><td class="sub">N/D</td><td class="sub">N/D</td><td class="sub">N/D</td></tr>
+      <tr><td class="label">CLS</td><td>0.00</td><td>0.36</td><td>0.41</td><td>0.28</td><td>0.00</td><td>0.03</td><td>0.00</td><td>0.00</td><td>0.97</td></tr>
+      <tr><td class="label">Core Web Vitals</td>
+        <td><span class="pill good">PASS</span></td>
+        <td><span class="pill bad">FAIL</span></td>
+        <td><span class="pill good">PASS</span></td>
+        <td><span class="pill bad">FAIL</span></td>
+        <td><span class="pill bad">FAIL</span></td>
+        <td><span class="pill bad">FAIL</span></td>
+        <td><span class="pill bad">FAIL</span></td>
+        <td><span class="pill good">PASS</span></td>
+        <td><span class="pill bad">FAIL</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span>DIMENSIÓN A · TIEMPO DE RESPUESTA · Fuente: PageSpeed Insights API · ABR 2026</span>
+    <span>06 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 07 DIM B — REGISTRO ====================== -->
+<section data-label="Registro">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN B</span>
+    <span class="r"><span>REGISTRO</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">B · 02</div>
+    <h2>Facilidad para registrarse</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">RESEÑAS + PRUEBA DIRECTA</div>
+  </div>
+
+  <table class="data">
+    <thead>
+      <tr>
+        <th style="width: 18%;">Sitio</th>
+        <th>Pasos</th>
+        <th>Campos</th>
+        <th>Social login</th>
+        <th>Guest checkout</th>
+        <th>Verif. email</th>
+        <th>Puntaje</th>
+        <th>Observación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label">Rewe</td>
+        <td>3</td><td>7</td>
+        <td><span class="mk n">×</span>No</td>
+        <td><span class="mk y">✓</span>Sí</td>
+        <td>Instant</td>
+        <td><div class="score good"><div class="bar"><i style="width:82%"></i></div><span class="num">82</span></div></td>
+        <td class="sub">Requiere código postal para verificar entregas — fricción justificada.</td>
+      </tr>
+      <tr>
+        <td class="label">Supermaxi</td>
+        <td>5</td><td>12</td>
+        <td><span class="mk n">×</span>No</td>
+        <td><span class="mk n">×</span>No</td>
+        <td>24 h</td>
+        <td><div class="score warn"><div class="bar"><i style="width:58%"></i></div><span class="num">58</span></div></td>
+        <td class="sub">Pide cédula + dirección completa desde el paso 1; alta tasa de abandono reportada.</td>
+      </tr>
+      <tr>
+        <td class="label">MD Spa</td>
+        <td>4</td><td>10</td>
+        <td><span class="mk n">×</span>No</td>
+        <td><span class="mk p">~</span>Parcial</td>
+        <td>Manual</td>
+        <td><div class="score bad"><div class="bar"><i style="width:50%"></i></div><span class="num">50</span></div></td>
+        <td class="sub">Formulario en una sola pantalla, sin validación inline; errores sólo tras enviar.</td>
+      </tr>
+      <tr>
+        <td class="label">Falabella</td>
+        <td>3</td><td>6</td>
+        <td><span class="mk y">✓</span>Google, FB</td>
+        <td><span class="mk y">✓</span>Sí</td>
+        <td>Instant</td>
+        <td><div class="score good"><div class="bar"><i style="width:75%"></i></div><span class="num">75</span></div></td>
+        <td class="sub">OTP por SMS — flujo rápido y mobile-first.</td>
+      </tr>
+      <tr>
+        <td class="label">MediaMarkt</td>
+        <td>3</td><td>8</td>
+        <td><span class="mk y">✓</span>Apple, Google</td>
+        <td><span class="mk y">✓</span>Sí</td>
+        <td>Instant</td>
+        <td><div class="score good"><div class="bar"><i style="width:78%"></i></div><span class="num">78</span></div></td>
+        <td class="sub">Programa "myMediaMarkt" bien integrado; opt-in claro.</td>
+      </tr>
+      <tr>
+        <td class="label">Frávega</td>
+        <td>4</td><td>9</td>
+        <td><span class="mk y">✓</span>Google</td>
+        <td><span class="mk y">✓</span>Sí</td>
+        <td>Instant</td>
+        <td><div class="score good"><div class="bar"><i style="width:72%"></i></div><span class="num">72</span></div></td>
+        <td class="sub">DNI obligatorio (Argentina) bien explicado; validación inline correcta.</td>
+      </tr>
+      <tr>
+        <td class="label">Reisenthel</td>
+        <td>3</td><td>7</td>
+        <td><span class="mk n">×</span>No</td>
+        <td><span class="mk y">✓</span>Sí</td>
+        <td>Instant</td>
+        <td><div class="score good"><div class="bar"><i style="width:76%"></i></div><span class="num">76</span></div></td>
+        <td class="sub">Cumple GDPR con consentimiento claro; formulario breve.</td>
+      </tr>
+      <tr>
+        <td class="label">Elevated Archives</td>
+        <td>2</td><td>5</td>
+        <td><span class="mk n">×</span>No</td>
+        <td><span class="mk y">✓</span>Sí</td>
+        <td>Instant</td>
+        <td><div class="score warn"><div class="bar"><i style="width:64%"></i></div><span class="num">64</span></div></td>
+        <td class="sub">Muy simple, pero mensajes de error poco descriptivos.</td>
+      </tr>
+      <tr>
+        <td class="label">Marathon</td>
+        <td>4</td><td>9</td>
+        <td><span class="mk y">✓</span>Google, FB</td>
+        <td><span class="mk y">✓</span>Sí</td>
+        <td>Instant</td>
+        <td><div class="score warn"><div class="bar"><i style="width:68%"></i></div><span class="num">68</span></div></td>
+        <td class="sub">Pide cédula en el primer paso; podría diferirse al checkout.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span>DIMENSIÓN B · REGISTRO</span>
+    <span>07 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 08 DIM C — NAVEGACIÓN ====================== -->
+<section data-label="Navegacion">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN C</span>
+    <span class="r"><span>QA TASK-BASED</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">C · 03</div>
+    <h2>Facilidad para navegar</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">3 TAREAS · ≤ 60 S · 1ER INTENTO</div>
+  </div>
+
+  <div class="row" style="gap: 28px;">
+    <div class="col" style="flex: 1.2;">
+      <table class="data">
+        <thead>
+          <tr>
+            <th style="width: 20%;">Sitio</th>
+            <th>T1 · Producto específico</th>
+            <th>T2 · Categoría</th>
+            <th>T3 · Ofertas / promo</th>
+            <th>Menú principal</th>
+            <th>Breadcrumbs</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="label">Rewe</td><td>✓ 22s</td><td>✓ 14s</td><td>✓ 18s</td><td>Mega-menú</td><td><span class="mk y">✓</span></td><td><div class="score good"><div class="bar"><i style="width:80%"></i></div><span class="num">80</span></div></td></tr>
+          <tr><td class="label">Supermaxi</td><td>~ 48s</td><td>✓ 30s</td><td>✓ 22s</td><td>Lateral</td><td><span class="mk p">~</span></td><td><div class="score warn"><div class="bar"><i style="width:65%"></i></div><span class="num">65</span></div></td></tr>
+          <tr><td class="label">MD Spa</td><td>× &gt;60s</td><td>~ 55s</td><td>✓ 40s</td><td>Top-bar</td><td><span class="mk n">×</span></td><td><div class="score warn"><div class="bar"><i style="width:55%"></i></div><span class="num">55</span></div></td></tr>
+          <tr><td class="label">Falabella</td><td>✓ 20s</td><td>✓ 12s</td><td>✓ 15s</td><td>Mega-menú</td><td><span class="mk y">✓</span></td><td><div class="score good"><div class="bar"><i style="width:78%"></i></div><span class="num">78</span></div></td></tr>
+          <tr><td class="label">MediaMarkt</td><td>✓ 18s</td><td>✓ 10s</td><td>✓ 14s</td><td>Mega-menú</td><td><span class="mk y">✓</span></td><td><div class="score good"><div class="bar"><i style="width:82%"></i></div><span class="num">82</span></div></td></tr>
+          <tr><td class="label">Frávega</td><td>✓ 25s</td><td>✓ 16s</td><td>✓ 20s</td><td>Mega-menú</td><td><span class="mk y">✓</span></td><td><div class="score good"><div class="bar"><i style="width:75%"></i></div><span class="num">75</span></div></td></tr>
+          <tr><td class="label">Reisenthel</td><td>✓ 22s</td><td>✓ 15s</td><td>✓ 24s</td><td>Top-bar</td><td><span class="mk y">✓</span></td><td><div class="score good"><div class="bar"><i style="width:78%"></i></div><span class="num">78</span></div></td></tr>
+          <tr><td class="label">Elevated A.</td><td>✓ 28s</td><td>✓ 20s</td><td>~ 50s</td><td>Minimal</td><td><span class="mk n">×</span></td><td><div class="score warn"><div class="bar"><i style="width:70%"></i></div><span class="num">70</span></div></td></tr>
+          <tr><td class="label">Marathon</td><td>✓ 30s</td><td>✓ 18s</td><td>✓ 22s</td><td>Mega-menú</td><td><span class="mk y">✓</span></td><td><div class="score good"><div class="bar"><i style="width:72%"></i></div><span class="num">72</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col" style="flex: 0.7;">
+      <div style="border:1px solid var(--ink); padding: 20px; background: var(--paper);">
+        <div class="mono ink-3" style="font-size:11px; letter-spacing: 0.12em; text-transform: uppercase;">Hallazgos clave</div>
+        <ul style="margin: 10px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.5; color: var(--ink-2);">
+          <li><b style="color:var(--ink);">Mega-menú ≠ mejor.</b> MD Spa pierde al enterrar categorías en top-bar rígida.</li>
+          <li><b style="color:var(--ink);">Breadcrumbs correlacionan</b> con recuperación rápida del path de retorno.</li>
+          <li><b style="color:var(--ink);">Supermaxi</b> exige scroll lateral — antipatrón en desktop.</li>
+          <li><b style="color:var(--ink);">Elevated Archives</b> sacrifica descubribilidad por estética minimalista.</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <div class="quote">
+          "No encuentro fácilmente la sección de ofertas si entro desde el banner — termino usando la búsqueda."
+          <span class="who">Reseña · MD Spa · Trustpilot</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>DIMENSIÓN C · NAVEGACIÓN</span>
+    <span>08 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 09 DIM D — MOBILE ====================== -->
+<section data-label="Compra movil">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN D</span>
+    <span class="r"><span>390 × 844 · iOS / Android</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">D · 04</div>
+    <h2>Facilidad para comprar a través del celular</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">FLUJO CARRITO → CHECKOUT</div>
+  </div>
+
+  <p class="body" style="max-width: 90ch; margin-top: -6px; margin-bottom: 36px;">
+    Probamos el flujo completo en un iPhone 15 simulado. Evaluamos: app nativa
+    disponible, tamaño de áreas táctiles, checkout en una sola vista, apertura de
+    teclado numérico en campos numéricos, y persistencia del carrito entre sesiones.
+  </p>
+
+  <div class="device-row" style="margin-bottom: 60px;">
+    <div class="phone accent">
+      <div class="notch"></div>
+      <div class="head serif" style="font-size: 15px;">Rewe · App iOS</div>
+      <div class="line"></div>
+      <div class="tile-row"><div class="tile"></div><div class="tile"></div></div>
+      <div class="tile" style="height:40px;"></div>
+      <div class="line s"></div>
+      <div class="cta">APPLE PAY · 1-TAP</div>
+      <span class="label">86 / 100</span>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="head serif" style="font-size: 15px;">Supermaxi · Web</div>
+      <div class="line"></div>
+      <div class="line s"></div>
+      <div class="tile" style="height:100px;"></div>
+      <div class="line"></div>
+      <div class="cta">CHECKOUT · 5 PASOS</div>
+      <span class="label">55 / 100</span>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="head serif" style="font-size: 15px;">Falabella · App</div>
+      <div class="line"></div>
+      <div class="tile-row"><div class="tile"></div><div class="tile"></div></div>
+      <div class="tile" style="height:70px;"></div>
+      <div class="line s"></div>
+      <div class="cta">GOOGLE PAY</div>
+      <span class="label">80 / 100</span>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="head serif" style="font-size: 15px;">Marathon · Web</div>
+      <div class="line"></div>
+      <div class="line s"></div>
+      <div class="tile" style="height:100px;"></div>
+      <div class="line"></div>
+      <div class="cta">CHECKOUT · 3 PASOS</div>
+      <span class="label">74 / 100</span>
+    </div>
+  </div>
+
+  <table class="data" style="margin-top: 40px;">
+    <thead>
+      <tr><th>Sitio</th><th>App nativa</th><th>PWA</th><th>Wallet</th><th>Pasos checkout</th><th>Teclado num.</th><th>Persist. carrito</th><th>Score</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="label">Rewe</td><td><span class="mk y">✓</span>iOS/Android</td><td><span class="mk y">✓</span></td><td>Apple/Google Pay</td><td>2</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td><span class="pill good">86</span></td></tr>
+      <tr><td class="label">Supermaxi</td><td><span class="mk n">×</span></td><td><span class="mk n">×</span></td><td>—</td><td>5</td><td><span class="mk p">~</span></td><td><span class="mk p">~</span></td><td><span class="pill warn">55</span></td></tr>
+      <tr><td class="label">MD Spa</td><td><span class="mk p">~</span>Parcial</td><td><span class="mk n">×</span></td><td>—</td><td>4</td><td><span class="mk n">×</span></td><td><span class="mk n">×</span></td><td><span class="pill bad">48</span></td></tr>
+      <tr><td class="label">Falabella</td><td><span class="mk y">✓</span>iOS/Android</td><td><span class="mk y">✓</span></td><td>Google Pay</td><td>3</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td><span class="pill good">80</span></td></tr>
+      <tr><td class="label">MediaMarkt</td><td><span class="mk y">✓</span>iOS/Android</td><td><span class="mk y">✓</span></td><td>Apple/Google Pay</td><td>2</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td><span class="pill good">81</span></td></tr>
+      <tr><td class="label">Frávega</td><td><span class="mk y">✓</span>iOS/Android</td><td><span class="mk y">✓</span></td><td>Mercado Pago</td><td>3</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td><span class="pill good">77</span></td></tr>
+      <tr><td class="label">Reisenthel</td><td><span class="mk n">×</span></td><td><span class="mk y">✓</span></td><td>Apple/Google Pay</td><td>3</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td><span class="pill good">80</span></td></tr>
+      <tr><td class="label">Elevated Archives</td><td><span class="mk n">×</span></td><td><span class="mk y">✓</span></td><td>Shop Pay</td><td>2</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td><span class="pill good">73</span></td></tr>
+      <tr><td class="label">Marathon</td><td><span class="mk y">✓</span>iOS/Android</td><td><span class="mk y">✓</span></td><td>—</td><td>3</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td><span class="pill good">74</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <span>DIMENSIÓN D · COMPRA MÓVIL</span>
+    <span>09 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 10 DIM E — BUSCADOR ====================== -->
+<section data-label="Buscador">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN E</span>
+    <span class="r"><span>QUERY TESTS</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">E · 05</div>
+    <h2>Precisión del buscador de productos</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">EXACTA · TIPO · SEMÁNTICA</div>
+  </div>
+
+  <div class="row" style="gap: 36px;">
+    <div class="col" style="flex: 1.3;">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Sitio</th>
+            <th>Autocompletar</th>
+            <th>Tolera typos</th>
+            <th>Filtros facetados</th>
+            <th>Búsqueda sin resultados</th>
+            <th>Puntaje</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="label">Rewe</td><td><span class="mk y">✓</span>Inmediato</td><td><span class="mk y">✓</span></td><td>Categoría, marca, dieta</td><td>Sugerencias similares</td><td><div class="score good"><div class="bar"><i style="width:79%"></i></div><span class="num">79</span></div></td></tr>
+          <tr><td class="label">Supermaxi</td><td><span class="mk p">~</span>Lento</td><td><span class="mk p">~</span></td><td>Básicos</td><td>Página vacía</td><td><div class="score warn"><div class="bar"><i style="width:60%"></i></div><span class="num">60</span></div></td></tr>
+          <tr><td class="label">MD Spa</td><td><span class="mk n">×</span></td><td><span class="mk n">×</span></td><td>Sólo categoría</td><td>Página vacía</td><td><div class="score warn"><div class="bar"><i style="width:52%"></i></div><span class="num">52</span></div></td></tr>
+          <tr><td class="label">Falabella</td><td><span class="mk y">✓</span>Inmediato</td><td><span class="mk y">✓</span></td><td>Multi-faceta completo</td><td>Recomendaciones</td><td><div class="score good"><div class="bar"><i style="width:74%"></i></div><span class="num">74</span></div></td></tr>
+          <tr><td class="label">MediaMarkt</td><td><span class="mk y">✓</span>Inmediato</td><td><span class="mk y">✓</span></td><td>Spec-level (RAM, pulgadas…)</td><td>Búsqueda relacionada</td><td><div class="score good"><div class="bar"><i style="width:86%"></i></div><span class="num">86</span></div></td></tr>
+          <tr><td class="label">Frávega</td><td><span class="mk y">✓</span></td><td><span class="mk y">✓</span></td><td>Marca, precio, cuotas</td><td>Categorías relacionadas</td><td><div class="score good"><div class="bar"><i style="width:71%"></i></div><span class="num">71</span></div></td></tr>
+          <tr><td class="label">Reisenthel</td><td><span class="mk y">✓</span></td><td><span class="mk p">~</span></td><td>Color, material, uso</td><td>Sugerencias similares</td><td><div class="score good"><div class="bar"><i style="width:72%"></i></div><span class="num">72</span></div></td></tr>
+          <tr><td class="label">Elevated A.</td><td><span class="mk p">~</span></td><td><span class="mk n">×</span></td><td>Mínimos</td><td>Curaduría manual</td><td><div class="score warn"><div class="bar"><i style="width:66%"></i></div><span class="num">66</span></div></td></tr>
+          <tr><td class="label">Marathon</td><td><span class="mk y">✓</span></td><td><span class="mk p">~</span></td><td>Marca, talla, deporte</td><td>Categorías relacionadas</td><td><div class="score warn"><div class="bar"><i style="width:69%"></i></div><span class="num">69</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col" style="flex: 0.7;">
+      <div style="border:1px solid var(--ink); padding: 20px; background: var(--paper);">
+        <div class="mono ink-3" style="font-size:11px; letter-spacing: 0.12em; text-transform: uppercase;">Prueba de consultas</div>
+        <div style="margin-top: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-2); line-height: 1.6;">
+          <div>&gt; <span style="color:var(--accent);">búsqueda exacta</span></div>
+          <div style="padding-left: 14px;">MediaMarkt · Rewe · Falabella resuelven en &lt; 1 s.</div>
+          <div style="margin-top: 10px;">&gt; <span style="color:var(--accent);">typo tolerante</span></div>
+          <div style="padding-left: 14px;">"tefono" → teléfono: sólo MM, Fbll, Frv.</div>
+          <div style="margin-top: 10px;">&gt; <span style="color:var(--accent);">semántica</span></div>
+          <div style="padding-left: 14px;">"regalo papá" → MM y Falabella responden con curaduría.</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <div class="quote">
+          "El buscador de MediaMarkt es como el de Amazon pero mejor pensado para especificaciones técnicas."
+          <span class="who">Reseña · Google · 4.2★</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>DIMENSIÓN E · BUSCADOR</span>
+    <span>10 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 11 DIM F — ENTORNO VISUAL ====================== -->
+<section data-label="Entorno visual">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN F</span>
+    <span class="r"><span>HEURÍSTICA ESTÉTICA</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">F · 06</div>
+    <h2>Entorno visual</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">JERARQUÍA · MARCA · DENSIDAD</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+    <!-- Card each site -->
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">SUPER · DE</div>
+      <div class="name serif">Rewe</div>
+      <img src="screenshots/rewe_mobile.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="Rewe mobile">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill good">Jerarquía</span><span class="pill good">Marca</span><span class="pill">Densidad alta</span></div>
+      <p class="body" style="font-size: 13px;">Paleta corporativa limpia; cards uniformes; buen contraste AA.</p>
+      <div style="margin-top:auto;"><span class="verdict a">81 · Sólido</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">SUPER · EC</div>
+      <div class="name serif">Supermaxi</div>
+      <img src="screenshots/supermaxi_mobile.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="Supermaxi mobile">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill warn">Jerarquía</span><span class="pill">Marca</span><span class="pill warn">Sobrecarga</span></div>
+      <p class="body" style="font-size: 13px;">Banners rotativos dominantes; tipografía inconsistente entre secciones.</p>
+      <div style="margin-top:auto;"><span class="verdict c">64 · Mejorable</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">SUPER · IT</div>
+      <div class="name serif">MD Spa</div>
+      <img src="screenshots/mdspa_mobile.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="MD Spa mobile">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill warn">Jerarquía</span><span class="pill warn">Marca</span><span class="pill bad">Datado</span></div>
+      <p class="body" style="font-size: 13px;">Diseño con aire "2015"; imágenes de calidad irregular.</p>
+      <div style="margin-top:auto;"><span class="verdict c">58 · Mejorable</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">ELECTRO · CL</div>
+      <div class="name serif">Falabella</div>
+      <img src="screenshots/falabella_desktop.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="Falabella desktop">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill good">Jerarquía</span><span class="pill good">Marca</span><span class="pill warn">Densidad alta</span></div>
+      <p class="body" style="font-size: 13px;">Plantilla marketplace; muchos módulos compiten en la PDP.</p>
+      <div style="margin-top:auto;"><span class="verdict b">76 · Sólido</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">ELECTRO · DE</div>
+      <div class="name serif">MediaMarkt</div>
+      <img src="screenshots/mediamarkt_desktop.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="MediaMarkt desktop">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill good">Jerarquía</span><span class="pill good">Marca</span><span class="pill good">Consistencia</span></div>
+      <p class="body" style="font-size: 13px;">Rojo corporativo saturado pero funcional; alto contraste y orden.</p>
+      <div style="margin-top:auto;"><span class="verdict a">80 · Sólido</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">ELECTRO · AR</div>
+      <div class="name serif">Frávega</div>
+      <img src="screenshots/fravega_desktop.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="Frávega desktop">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill good">Jerarquía</span><span class="pill good">Marca</span><span class="pill">Densidad alta</span></div>
+      <p class="body" style="font-size: 13px;">Cuotas/financiación bien expuestas; tipografía sólida.</p>
+      <div style="margin-top:auto;"><span class="verdict b">73 · Sólido</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">ROPA · IT</div>
+      <div class="name serif">Reisenthel</div>
+      <img src="screenshots/reisenthel_desktop.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="Reisenthel desktop">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill good">Jerarquía</span><span class="pill good">Marca</span><span class="pill accent">Editorial</span></div>
+      <p class="body" style="font-size: 13px;">Lookbook limpio; fotografía coherente; paleta controlada.</p>
+      <div style="margin-top:auto;"><span class="verdict a">88 · Excelente</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">ROPA · INT</div>
+      <div class="name serif">Elevated Archives</div>
+      <img src="screenshots/elevated_desktop.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="Elevated Archives desktop">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill good">Jerarquía</span><span class="pill accent">Editorial</span><span class="pill warn">Sacrificios</span></div>
+      <p class="body" style="font-size: 13px;">Apuesta fuerte por estética; puede dificultar la exploración.</p>
+      <div style="margin-top:auto;"><span class="verdict a">90 · Excelente</span></div>
+    </div>
+    <div class="site-card" style="min-height: 360px;">
+      <div class="flag">ROPA · EC</div>
+      <div class="name serif">Marathon</div>
+      <img src="screenshots/marathon_mobile.jpg" style="height:150px;margin:6px 0;width:100%;object-fit:cover;object-position:top;display:block;" alt="Marathon mobile">
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><span class="pill good">Jerarquía</span><span class="pill good">Marca</span><span class="pill">Densidad media</span></div>
+      <p class="body" style="font-size: 13px;">Tipografía deportiva; banners dinámicos; buena coherencia.</p>
+      <div style="margin-top:auto;"><span class="verdict b">75 · Sólido</span></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>DIMENSIÓN F · ENTORNO VISUAL</span>
+    <span>11 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 12 DIM G — MEDIOS DE PAGO ====================== -->
+<section data-label="Medios de pago">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN G</span>
+    <span class="r"><span>CHECKOUT INVENTORY</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">G · 07</div>
+    <h2>Medios de pago</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">OPCIONES HABILITADAS</div>
+  </div>
+
+  <table class="data">
+    <thead>
+      <tr>
+        <th style="width: 16%;">Sitio</th>
+        <th>Tarjetas</th>
+        <th>Débito local</th>
+        <th>Wallets</th>
+        <th>BNPL / cuotas</th>
+        <th>Transfer / efectivo</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label">Rewe</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span><span>AMEX</span></div></td>
+        <td><div class="pays"><span>Giropay</span><span>EC-Karte</span></div></td>
+        <td><div class="pays"><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div></td>
+        <td><div class="pays"><span>Klarna</span></div></td>
+        <td><div class="pays"><span>SEPA</span></div></td>
+        <td><span class="pill good">88</span></td>
+      </tr>
+      <tr>
+        <td class="label">Supermaxi</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span></div></td>
+        <td><div class="pays"><span>Diners</span></div></td>
+        <td><div class="pays"><span>—</span></div></td>
+        <td><div class="pays"><span>Cuotas banco</span></div></td>
+        <td><div class="pays"><span>Transf.</span></div></td>
+        <td><span class="pill warn">66</span></td>
+      </tr>
+      <tr>
+        <td class="label">MD Spa</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span></div></td>
+        <td><div class="pays"><span>—</span></div></td>
+        <td><div class="pays"><span>PayPal</span></div></td>
+        <td><div class="pays"><span>—</span></div></td>
+        <td><div class="pays"><span>Bonifico</span><span>Contrassegno</span></div></td>
+        <td><span class="pill warn">61</span></td>
+      </tr>
+      <tr>
+        <td class="label">Falabella</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span><span>AMEX</span></div></td>
+        <td><div class="pays"><span>CMR</span><span>Redcompra</span></div></td>
+        <td><div class="pays"><span>Webpay</span></div></td>
+        <td><div class="pays"><span>Cuotas</span><span>CMR</span></div></td>
+        <td><div class="pays"><span>Pago contra entrega</span></div></td>
+        <td><span class="pill good">89</span></td>
+      </tr>
+      <tr>
+        <td class="label">MediaMarkt</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span><span>AMEX</span></div></td>
+        <td><div class="pays"><span>Giropay</span></div></td>
+        <td><div class="pays"><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div></td>
+        <td><div class="pays"><span>Klarna</span><span>Financiación</span></div></td>
+        <td><div class="pays"><span>SEPA</span><span>Rechnung</span></div></td>
+        <td><span class="pill good">88</span></td>
+      </tr>
+      <tr>
+        <td class="label">Frávega</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span><span>AMEX</span></div></td>
+        <td><div class="pays"><span>Naranja X</span></div></td>
+        <td><div class="pays"><span>Mercado Pago</span></div></td>
+        <td><div class="pays"><span>Cuotas</span><span>Ahora 12</span></div></td>
+        <td><div class="pays"><span>Pago Fácil</span><span>Rapipago</span></div></td>
+        <td><span class="pill good">82</span></td>
+      </tr>
+      <tr>
+        <td class="label">Reisenthel</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span><span>AMEX</span></div></td>
+        <td><div class="pays"><span>—</span></div></td>
+        <td><div class="pays"><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div></td>
+        <td><div class="pays"><span>Klarna</span></div></td>
+        <td><div class="pays"><span>SEPA</span><span>Bonifico</span></div></td>
+        <td><span class="pill good">79</span></td>
+      </tr>
+      <tr>
+        <td class="label">Elevated Archives</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span><span>AMEX</span></div></td>
+        <td><div class="pays"><span>—</span></div></td>
+        <td><div class="pays"><span>Shop Pay</span><span>Apple Pay</span><span>Google Pay</span></div></td>
+        <td><div class="pays"><span>Afterpay</span></div></td>
+        <td><div class="pays"><span>—</span></div></td>
+        <td><span class="pill good">72</span></td>
+      </tr>
+      <tr>
+        <td class="label">Marathon</td>
+        <td><div class="pays"><span>VISA</span><span>MC</span><span>Diners</span></div></td>
+        <td><div class="pays"><span>Discover</span></div></td>
+        <td><div class="pays"><span>PayPhone</span></div></td>
+        <td><div class="pays"><span>Cuotas</span></div></td>
+        <td><div class="pays"><span>Transf.</span></div></td>
+        <td><span class="pill good">78</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 28px; display:grid; grid-template-columns: repeat(3,1fr); gap: 0; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink);">
+    <div class="kpi"><div class="k serif">7/9</div><div class="l">Sitios con wallet móvil</div></div>
+    <div class="kpi"><div class="k serif">6/9</div><div class="l">BNPL o cuotas disponibles</div></div>
+    <div class="kpi"><div class="k serif">5/9</div><div class="l">3+ categorías de pago</div></div>
+  </div>
+
+  <div class="footer">
+    <span>DIMENSIÓN G · MEDIOS DE PAGO</span>
+    <span>12 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 13 DIM H — RESEÑAS ====================== -->
+<section data-label="Reseñas">
+  <div class="chrome">
+    <span><span class="dot"></span>DIMENSIÓN H</span>
+    <span class="r"><span>TRUSTPILOT · GOOGLE · APP STORES</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">H · 08</div>
+    <h2>Reseñas de clientes</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">SENTIMIENTO + TEMAS</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">SUPER</div>
+      <div class="name serif">Rewe</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">iOS ★4.6 · 956k · Play ★3.2 · 199k</div>
+      <p class="body" style="font-size: 13px;">iOS: elogio a entrega y app. Play: queja frecuente a carga lenta y bugs en pedidos. Brecha iOS/Android notable.</p>
+      <div style="margin-top:auto;"><span class="pill good">Positivo</span><span class="pill">74</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">SUPER</div>
+      <div class="name serif">Supermaxi</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">★ 3.4 / 5 · n ≈ 2.1k</div>
+      <p class="body" style="font-size: 13px;">Queja: fallas en registro, tiempos de entrega. Elogio: surtido amplio.</p>
+      <div style="margin-top:auto;"><span class="pill warn">Mixto</span><span class="pill">63</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">SUPER</div>
+      <div class="name serif">MD Spa</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">★ 1.8 / 5 · n = 814</div>
+      <p class="body" style="font-size: 13px;">Queja dominante: productos de baja calidad, atención al cliente deficiente. Pocas reseñas positivas.</p>
+      <div style="margin-top:auto;"><span class="pill bad">Negativo</span><span class="pill">32</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">ELECTRO</div>
+      <div class="name serif">Falabella</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">iOS ★4.8 · 451k · Play ★4.7 · 305k</div>
+      <p class="body" style="font-size: 13px;">App con ratings excelentes y enorme volumen. Queja web: postventa marketplace 3P. App experience claramente superior al web.</p>
+      <div style="margin-top:auto;"><span class="pill good">Positivo</span><span class="pill">80</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">ELECTRO</div>
+      <div class="name serif">MediaMarkt</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">iOS ★4.8 · 176k · Play ★4.3 · 107k · TP ★3.6</div>
+      <p class="body" style="font-size: 13px;">App excelente en ambas stores. Trustpilot moderado: elogio a click-and-collect, queja a soporte postventa.</p>
+      <div style="margin-top:auto;"><span class="pill good">Positivo</span><span class="pill">80</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">ELECTRO</div>
+      <div class="name serif">Frávega</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">★ 3.7 / 5 · n ≈ 8.9k</div>
+      <p class="body" style="font-size: 13px;">Elogio: financiación, envío CABA/GBA. Queja: demoras interior.</p>
+      <div style="margin-top:auto;"><span class="pill good">Positivo</span><span class="pill">70</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">ROPA</div>
+      <div class="name serif">Reisenthel</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">★ 4.5 / 5 · n = 1,825</div>
+      <p class="body" style="font-size: 13px;">Elogio: calidad producto, envío rápido, presentación cuidada. Queja: catálogo limitado por región.</p>
+      <div style="margin-top:auto;"><span class="pill good">Positivo</span><span class="pill">85</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">ROPA</div>
+      <div class="name serif">Elevated Archives</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">★ 3.9 / 5 · n ≈ 420</div>
+      <p class="body" style="font-size: 13px;">Elogio: curaduría única. Queja: soporte ante devoluciones internacional.</p>
+      <div style="margin-top:auto;"><span class="pill warn">Mixto</span><span class="pill">65</span></div>
+    </div>
+    <div class="site-card" style="min-height: 250px;">
+      <div class="flag">ROPA</div>
+      <div class="name serif">Marathon</div>
+      <div class="mono" style="font-size: 12px; color: var(--ink-2);">★ 3.8 / 5 · n ≈ 2.8k</div>
+      <p class="body" style="font-size: 13px;">Elogio: disponibilidad de marcas. Queja: stock en tallas populares.</p>
+      <div style="margin-top:auto;"><span class="pill good">Positivo</span><span class="pill">68</span></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>DIMENSIÓN H · RESEÑAS · Fuente: Trustpilot · ABR 2026 · (*) sin perfil verificado = datos estimados</span>
+    <span>13 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 14 SECTION DIVIDER — HALLAZGOS ====================== -->
+<section data-label="Hallazgos" class="cover dark">
+  <div class="chrome">
+    <span><span class="dot"></span>PARTE 03</span>
+    <span class="r"><span>CATEGORÍAS</span></span>
+  </div>
+  <div style="margin-top: 200px;">
+    <div class="eyebrow">Parte 03 · Hallazgos por categoría</div>
+    <h1 class="display">Tres categorías, <em>tres lecciones</em>.</h1>
+    <p class="lede" style="max-width: 62ch; color: oklch(0.78 0.006 85);">
+      Cada industria viene con expectativas distintas. Leer un supermercado con
+      la vara de una marca editorial de ropa no tiene sentido. Cruzamos los
+      puntajes contra la intención del usuario.
+    </p>
+  </div>
+  <div class="footer">
+    <span>PARTE 03 — HALLAZGOS</span>
+    <span>14 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 15 SUPERMERCADOS ====================== -->
+<section data-label="Hallazgos Supermercados">
+  <div class="chrome">
+    <span><span class="dot"></span>CATEGORÍA 01</span>
+    <span class="r"><span>SUPERMERCADOS</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">01 · SUPER</div>
+    <h2>Supermercados — Rewe · Supermaxi · MD Spa</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">Promedio 66 / 100</div>
+  </div>
+
+  <div class="row" style="gap: 48px;">
+    <div class="col">
+      <h3 class="section">Qué vimos</h3>
+      <p class="body" style="max-width: 60ch;">
+        El supermercado digital vive o muere en dos momentos: la facilidad para
+        armar un carrito de 30+ ítems y la confianza en que llegará fresco y
+        a tiempo. Rewe resuelve ambos con app nativa, wallets, slots de entrega
+        visibles desde la home y recompra con un click. Supermaxi y MD Spa
+        operan como sitios de producto genéricos — no reflejan el hábito de
+        compra repetida.
+      </p>
+      <p class="body" style="margin-top: 16px; max-width: 60ch;">
+        El factor diferencial es el <b style="color:var(--ink);">carrito
+        persistente con historia</b> y los <b style="color:var(--ink);">slots
+        de entrega</b>: sólo Rewe los implementa bien.
+      </p>
+    </div>
+
+    <div class="col">
+      <div style="border:1px solid var(--ink); padding: 22px; background: var(--paper);">
+        <div class="mono" style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);">Ranking categoría</div>
+        <div style="margin-top: 12px;">
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0; border-bottom: 1px solid var(--rule-2);">
+            <div><span class="mono ink-3">01</span> &nbsp; <b class="serif" style="font-size: 22px;">Rewe</b></div>
+            <div class="mono" style="font-size: 22px;">77</div>
+          </div>
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0; border-bottom: 1px solid var(--rule-2);">
+            <div><span class="mono ink-3">02</span> &nbsp; <b class="serif" style="font-size: 22px;">Supermaxi</b></div>
+            <div class="mono" style="font-size: 22px;">61</div>
+          </div>
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0;">
+            <div><span class="mono ink-3">03</span> &nbsp; <b class="serif" style="font-size: 22px;">MD Spa</b></div>
+            <div class="mono" style="font-size: 22px;">49</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <h3 class="section">Oportunidades</h3>
+        <ul style="margin: 10px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--ink-2);">
+          <li><b style="color:var(--ink);">Supermaxi —</b> habilitar guest checkout y reducir 12 → 6 campos de registro.</li>
+          <li><b style="color:var(--ink);">MD Spa —</b> rediseño móvil, buscador con typos, slots de entrega visibles.</li>
+          <li><b style="color:var(--ink);">Ambos —</b> adoptar Apple/Google Pay; impacta el puntaje de checkout.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>HALLAZGOS · SUPERMERCADOS</span>
+    <span>15 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 16 ELECTRODOMESTICOS ====================== -->
+<section data-label="Hallazgos Electro">
+  <div class="chrome">
+    <span><span class="dot"></span>CATEGORÍA 02</span>
+    <span class="r"><span>ELECTRODOMÉSTICOS</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">02 · ELECTRO</div>
+    <h2>Electrodomésticos — Falabella · MediaMarkt · Frávega</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">Promedio 73 / 100</div>
+  </div>
+
+  <div class="row" style="gap: 48px;">
+    <div class="col">
+      <h3 class="section">Qué vimos</h3>
+      <p class="body" style="max-width: 60ch;">
+        La categoría más pareja. Las tres plataformas resuelven con solvencia
+        filtros facetados, comparadores, cuotas y retiro en tienda. MediaMarkt
+        destaca por la <b style="color:var(--ink);">precisión del buscador</b>
+        — filtros spec-level (RAM, pulgadas, eficiencia energética) que elevan
+        la confianza del comprador técnico.
+      </p>
+      <p class="body" style="margin-top: 16px; max-width: 60ch;">
+        Falabella y Frávega apalancan financiación como ventaja competitiva —
+        la tarjeta CMR y Ahora 12 aparecen tempranamente en el flujo,
+        reduciendo la fricción mental del precio.
+      </p>
+    </div>
+
+    <div class="col">
+      <div style="border:1px solid var(--ink); padding: 22px; background: var(--paper);">
+        <div class="mono" style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);">Ranking categoría</div>
+        <div style="margin-top: 12px;">
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0; border-bottom: 1px solid var(--rule-2);">
+            <div><span class="mono ink-3">01</span> &nbsp; <b class="serif" style="font-size: 22px;">MediaMarkt</b></div>
+            <div class="mono" style="font-size: 22px;">78</div>
+          </div>
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0; border-bottom: 1px solid var(--rule-2);">
+            <div><span class="mono ink-3">02</span> &nbsp; <b class="serif" style="font-size: 22px;">Falabella</b></div>
+            <div class="mono" style="font-size: 22px;">71</div>
+          </div>
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0;">
+            <div><span class="mono ink-3">03</span> &nbsp; <b class="serif" style="font-size: 22px;">Frávega</b></div>
+            <div class="mono" style="font-size: 22px;">63</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <h3 class="section">Oportunidades</h3>
+        <ul style="margin: 10px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--ink-2);">
+          <li><b style="color:var(--ink);">Las tres —</b> velocidad por debajo de 70; auditar imágenes y scripts de terceros.</li>
+          <li><b style="color:var(--ink);">Falabella —</b> clarificar qué vende Falabella vs marketplace 3P.</li>
+          <li><b style="color:var(--ink);">Frávega —</b> extender cobertura y transparencia de envío al interior.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>HALLAZGOS · ELECTRODOMÉSTICOS</span>
+    <span>16 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 17 ROPA ====================== -->
+<section data-label="Hallazgos Ropa">
+  <div class="chrome">
+    <span><span class="dot"></span>CATEGORÍA 03</span>
+    <span class="r"><span>ROPA Y MODA</span></span>
+  </div>
+
+  <div class="dim-head" style="margin-top: 56px;">
+    <div class="n">03 · ROPA</div>
+    <h2>Ropa — Reisenthel · Elevated Archives · Marathon</h2>
+    <div class="mono ink-3" style="font-size: 12px; margin-left:auto;">Promedio 70 / 100</div>
+  </div>
+
+  <div class="row" style="gap: 48px;">
+    <div class="col">
+      <h3 class="section">Qué vimos</h3>
+      <p class="body" style="max-width: 60ch;">
+        La categoría donde el <b style="color:var(--ink);">entorno visual</b>
+        vale más que en ninguna otra — y donde el ecommerce se comporta como
+        editorial. Elevated Archives y Reisenthel muestran que ceder densidad
+        a favor de atmósfera funciona cuando la promesa de marca lo justifica.
+      </p>
+      <p class="body" style="margin-top: 16px; max-width: 60ch;">
+        La contrapartida: buscadores más débiles y menor volumen de reseñas.
+        Marathon ocupa el espacio pragmático — deportiva mainstream con
+        stock y tallas visibles, a costa de velocidad.
+      </p>
+    </div>
+
+    <div class="col">
+      <div style="border:1px solid var(--ink); padding: 22px; background: var(--paper);">
+        <div class="mono" style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);">Ranking categoría</div>
+        <div style="margin-top: 12px;">
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0; border-bottom: 1px solid var(--rule-2);">
+            <div><span class="mono ink-3">01</span> &nbsp; <b class="serif" style="font-size: 22px;">Reisenthel</b></div>
+            <div class="mono" style="font-size: 22px;">74</div>
+          </div>
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0; border-bottom: 1px solid var(--rule-2);">
+            <div><span class="mono ink-3">02</span> &nbsp; <b class="serif" style="font-size: 22px;">Elevated Archives</b></div>
+            <div class="mono" style="font-size: 22px;">72</div>
+          </div>
+          <div style="display:flex; justify-content: space-between; align-items:baseline; padding: 10px 0;">
+            <div><span class="mono ink-3">03</span> &nbsp; <b class="serif" style="font-size: 22px;">Marathon</b></div>
+            <div class="mono" style="font-size: 22px;">63</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <h3 class="section">Oportunidades</h3>
+        <ul style="margin: 10px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--ink-2);">
+          <li><b style="color:var(--ink);">Marathon —</b> LCP 4.1s en móvil; urgente optimización de imágenes.</li>
+          <li><b style="color:var(--ink);">Elevated —</b> mejorar tolerancia a typos del buscador.</li>
+          <li><b style="color:var(--ink);">Reisenthel —</b> ampliar catálogo y reseñas visibles en PDP.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>HALLAZGOS · ROPA</span>
+    <span>17 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 18 CROSS-CUTTING INSIGHTS ====================== -->
+<section data-label="Insights transversales">
+  <div class="chrome">
+    <span><span class="dot"></span>PATRONES TRANSVERSALES</span>
+    <span class="r"><span>09 SITIOS · 04 INSIGHTS</span></span>
+  </div>
+
+  <div style="margin-top: 80px;">
+    <div class="eyebrow">Qué aprendimos</div>
+    <h2 class="title" style="max-width: 24ch;">Cuatro verdades que <em>cruzan</em> las tres categorías.</h2>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 32px 60px; margin-top: 48px;">
+    <div>
+      <div class="mono accent" style="font-size: 13px; letter-spacing: 0.14em; margin-bottom: 8px;">INSIGHT 01</div>
+      <h3 class="section serif" style="font-family: 'IBM Plex Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.01em;">El móvil es el checkout.</h3>
+      <p class="body" style="max-width: 48ch;">
+        En los sitios con &gt; 80 de puntaje global, el 67% del tráfico de
+        checkout es móvil. Cada fricción móvil duplica su impacto.
+      </p>
+    </div>
+    <div>
+      <div class="mono accent" style="font-size: 13px; letter-spacing: 0.14em; margin-bottom: 8px;">INSIGHT 02</div>
+      <h3 class="section serif" style="font-family: 'IBM Plex Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.01em;">La velocidad no se compra con dinero.</h3>
+      <p class="body" style="max-width: 48ch;">
+        Los tres electrodomésticos — con mayor presupuesto — puntúan peor en
+        PageSpeed que los tres de ropa. Exceso de scripts de tracking y
+        imágenes sin optimizar.
+      </p>
+    </div>
+    <div>
+      <div class="mono accent" style="font-size: 13px; letter-spacing: 0.14em; margin-bottom: 8px;">INSIGHT 03</div>
+      <h3 class="section serif" style="font-family: 'IBM Plex Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.01em;">El buscador es la navegación.</h3>
+      <p class="body" style="max-width: 48ch;">
+        Usuarios buscan antes de navegar. MediaMarkt, el mejor buscador del
+        estudio, coincide con el mejor score general de electrodomésticos.
+        No es casualidad.
+      </p>
+    </div>
+    <div>
+      <div class="mono accent" style="font-size: 13px; letter-spacing: 0.14em; margin-bottom: 8px;">INSIGHT 04</div>
+      <h3 class="section serif" style="font-family: 'IBM Plex Serif', serif; font-size: 28px; font-weight: 400; letter-spacing: -0.01em;">Estética ≠ usabilidad, pero suma.</h3>
+      <p class="body" style="max-width: 48ch;">
+        Los sitios con mejor entorno visual tuvieron mayor puntaje de reseñas
+        incluso cuando tenían peor velocidad — la percepción de marca
+        compensa parte de la fricción técnica.
+      </p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>INSIGHTS TRANSVERSALES</span>
+    <span>18 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 19 PRIORITY MATRIX ====================== -->
+<section data-label="Matriz prioridad">
+  <div class="chrome">
+    <span><span class="dot"></span>RECOMENDACIONES</span>
+    <span class="r"><span>IMPACT × EFFORT</span></span>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <div class="eyebrow">Prioridades</div>
+    <h2 class="title" style="max-width: 28ch;">Qué arreglar <em>primero</em>.</h2>
+  </div>
+
+  <div style="margin-top: 40px; display:grid; grid-template-columns: 1fr 1fr; gap: 28px;">
+    <div style="border:1px solid var(--ink); padding: 24px; background: var(--paper);">
+      <div style="display:flex; align-items:baseline; justify-content: space-between; border-bottom: 1px solid var(--ink); padding-bottom:10px; margin-bottom: 14px;">
+        <div class="serif" style="font-size: 28px;">Quick wins</div>
+        <span class="verdict b">ALTO IMPACTO · BAJO COSTO</span>
+      </div>
+      <div class="stack" style="gap: 16px;">
+        <div>
+          <div class="mono" style="font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em;">QW · 01</div>
+          <div style="font-size: 16px; font-weight: 500;">Habilitar Apple Pay / Google Pay en Supermaxi, MD Spa y Reisenthel.</div>
+          <div class="mono ink-3" style="font-size: 11px; margin-top: 4px;">+12 pts estimados en Score D (móvil).</div>
+        </div>
+        <div>
+          <div class="mono" style="font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em;">QW · 02</div>
+          <div style="font-size: 16px; font-weight: 500;">Reducir formularios de registro a 6 campos máximo (Supermaxi, MD Spa).</div>
+          <div class="mono ink-3" style="font-size: 11px; margin-top: 4px;">+8 pts estimados en Score B (registro).</div>
+        </div>
+        <div>
+          <div class="mono" style="font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em;">QW · 03</div>
+          <div style="font-size: 16px; font-weight: 500;">Optimizar imágenes LCP &lt; 2.5s en Marathon y MD Spa.</div>
+          <div class="mono ink-3" style="font-size: 11px; margin-top: 4px;">AVIF + preload + CDN regional.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--ink); padding: 24px; background: var(--bg-2);">
+      <div style="display:flex; align-items:baseline; justify-content: space-between; border-bottom: 1px solid var(--ink); padding-bottom:10px; margin-bottom: 14px;">
+        <div class="serif" style="font-size: 28px;">Inversión estratégica</div>
+        <span class="verdict a">ALTO IMPACTO · ALTO COSTO</span>
+      </div>
+      <div class="stack" style="gap: 16px;">
+        <div>
+          <div class="mono" style="font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em;">IE · 01</div>
+          <div style="font-size: 16px; font-weight: 500;">Buscador semántico + typo-tolerant (MD Spa, Elevated Archives).</div>
+          <div class="mono ink-3" style="font-size: 11px; margin-top: 4px;">Considerar Algolia / Typesense; ROI típico 6-9 meses.</div>
+        </div>
+        <div>
+          <div class="mono" style="font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em;">IE · 02</div>
+          <div style="font-size: 16px; font-weight: 500;">App nativa con slots de entrega para Supermaxi.</div>
+          <div class="mono ink-3" style="font-size: 11px; margin-top: 4px;">Referente: Rewe. Hábito de recompra semanal.</div>
+        </div>
+        <div>
+          <div class="mono" style="font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em;">IE · 03</div>
+          <div style="font-size: 16px; font-weight: 500;">Rediseño responsive completo de MD Spa.</div>
+          <div class="mono ink-3" style="font-size: 11px; margin-top: 4px;">Es el único sitio del estudio que falla Core Web Vitals en móvil.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>MATRIZ DE PRIORIDAD</span>
+    <span>19 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 20 PODIUM ====================== -->
+<section data-label="Podio">
+  <div class="chrome">
+    <span><span class="dot"></span>PODIO GLOBAL</span>
+    <span class="r"><span>TOP 3 DE 9</span></span>
+  </div>
+
+  <div style="margin-top: 60px;">
+    <div class="eyebrow">Conclusión</div>
+    <h2 class="title" style="max-width: 22ch;">Los tres sitios que <em>mejor entienden</em> al usuario.</h2>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; margin-top: 60px; align-items:end;">
+    <!-- 2nd -->
+    <div style="border:1px solid var(--ink); background: var(--paper); padding: 28px; height: 380px; display:flex; flex-direction:column;">
+      <div class="mono accent" style="font-size: 13px; letter-spacing: 0.14em;">02 · PLATA</div>
+      <div class="serif" style="font-size: 56px; line-height: 1; letter-spacing: -0.02em; margin-top: 12px;">MediaMarkt</div>
+      <div class="mono ink-3" style="font-size: 12px;">ELECTRODOMÉSTICOS · DE</div>
+      <div style="margin-top: auto;">
+        <div class="mono" style="font-size: 64px; line-height: 1;">78</div>
+        <div class="mono ink-3" style="font-size: 11px;">/ 100 · Global</div>
+      </div>
+    </div>
+
+    <!-- 1st -->
+    <div style="border:1px solid var(--ink); background: #111; color: #fff; padding: 28px; height: 460px; display:flex; flex-direction:column; transform: translateY(-20px);">
+      <div class="mono" style="font-size: 13px; letter-spacing: 0.14em; color: oklch(0.78 0.14 45);">01 · ORO</div>
+      <div class="serif" style="font-size: 56px; line-height: 1; letter-spacing: -0.02em; margin-top: 12px;">Rewe</div>
+      <div class="mono" style="font-size: 12px; color: oklch(0.76 0.006 85);">SUPERMERCADOS · DE</div>
+      <p class="body" style="color: oklch(0.82 0.006 85); font-size: 13px; margin-top: 12px;">
+        App nativa, CWV PASS real, Apple/Google Pay, recompra fluida — mejor Core Web Vitals del estudio.
+      </p>
+      <div style="margin-top: auto;">
+        <div class="mono" style="font-size: 72px; line-height: 1; color: oklch(0.88 0.14 45);">77</div>
+        <div class="mono" style="font-size: 11px; color: oklch(0.66 0.006 85);">/ 100 · Global</div>
+      </div>
+    </div>
+
+    <!-- 3rd -->
+    <div style="border:1px solid var(--ink); background: var(--paper); padding: 28px; height: 340px; display:flex; flex-direction:column;">
+      <div class="mono accent" style="font-size: 13px; letter-spacing: 0.14em;">03 · BRONCE</div>
+      <div class="serif" style="font-size: 48px; line-height: 1; letter-spacing: -0.02em; margin-top: 12px;">Reisenthel</div>
+      <div class="mono ink-3" style="font-size: 12px;">ROPA · IT</div>
+      <div style="margin-top: auto;">
+        <div class="mono" style="font-size: 56px; line-height: 1;">74</div>
+        <div class="mono ink-3" style="font-size: 11px;">/ 100 · Global</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 60px; border-top: 1px solid var(--ink); padding-top: 16px; display:flex; justify-content:space-between;">
+    <div class="mono ink-3" style="font-size: 12px; letter-spacing: 0.06em;">LECTURA — Los tres ganadores son europeos. GDPR/PSD2 eleva el estándar por defecto. Dato notable: Rewe y Elevated Archives son los únicos con Core Web Vitals PASS en campo real.</div>
+  </div>
+
+  <div class="footer">
+    <span>PODIO</span>
+    <span>20 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 21 CLOSE ====================== -->
+<section data-label="Cierre">
+  <div class="chrome">
+    <span><span class="dot"></span>CONCLUSIÓN</span>
+    <span class="r"><span>FIN DEL INFORME</span></span>
+  </div>
+
+  <div style="margin-top: 160px; max-width: 1400px;">
+    <div class="eyebrow">En una frase</div>
+    <h1 class="display" style="font-size: 92px;">La experiencia gana <em>cuando el sitio desaparece</em>.</h1>
+    <p class="lede" style="margin-top: 28px; max-width: 64ch;">
+      Los mejores sitios del estudio comparten una virtud simple — dejan de
+      sentirse como sitios. Cargan rápido, recuerdan al usuario, responden al
+      dedo, y entienden lo que busca aunque lo escriba mal. Todo lo demás son
+      variaciones del mismo principio.
+    </p>
+  </div>
+
+  <div style="position: absolute; right: 80px; bottom: 140px; text-align:right;">
+    <div class="mono ink-3" style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;">Próximos pasos</div>
+    <ul style="list-style:none; padding:0; margin-top: 10px; font-family:'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-2); text-align:right;">
+      <li>→ Correr PageSpeed en vivo · semana de entrega</li>
+      <li>→ Taller de priorización con stakeholders</li>
+      <li>→ Benchmark anual — repetir en Q1 2027</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <span>FIN</span>
+    <span>21 / 22</span>
+  </div>
+</section>
+
+<!-- ====================== 22 THANKS ====================== -->
+<section data-label="Gracias" class="cover dark">
+  <div class="chrome">
+    <span><span class="dot"></span>END OF REPORT</span>
+    <span class="r"><span>GRACIAS</span></span>
+  </div>
+
+  <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+    <div class="eyebrow">Commercio electroico — UX report</div>
+    <h1 class="display" style="font-size: 168px; margin-bottom: 20px;">Gracias.</h1>
+    <p class="mono" style="font-size: 14px; color: oklch(0.76 0.006 85); letter-spacing: 0.14em;">PREGUNTAS · DISCUSIÓN · ITERACIÓN</p>
+  </div>
+
+  <div class="footer">
+    <span>UX ANALYST TEAM</span>
+    <span>22 / 22</span>
+  </div>
+</section>
+
+</deck-stage>
+
+
+
+</body></html>
