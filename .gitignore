@@ -2,3 +2,5 @@
 .claude/
 .firecrawl/
 skills-lock.json
+.env
+.playwright-mcp/
